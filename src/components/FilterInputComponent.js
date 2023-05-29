@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { fetchFilteredNewsApi, fetchFilteredTheGuardianApi, unmountFilteredNews } from '../actions/newsActions';
 import { FaSearch } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import Select from 'react-select';
+
 import 'react-datepicker/dist/react-datepicker.css';
-import { fetchFilteredNewsApi, unmountFilteredNews } from '../actions/newsActions';
 
 const SearchAndFilter = ({ onSearch, onFilter }) => {
   const dispatch = useDispatch()
@@ -19,7 +20,7 @@ const SearchAndFilter = ({ onSearch, onFilter }) => {
 
   const [keyword, setKeyword] = useState('');
   const [filterDate, setFilterDate] = useState(null);
-  const [filterCategory, setFilterCategory] = useState('');
+  const [filterCategory, setFilterCategory] = useState({});
   const [filterSource, setFilterSource] = useState('');
 
   const sourceOptions = [
@@ -30,21 +31,35 @@ const SearchAndFilter = ({ onSearch, onFilter }) => {
   ];
 
   useEffect(() => {
-    let timer;
-    if (keyword) {
-      timer = setTimeout(() => {
-        dispatch(fetchFilteredNewsApi({
-          keyword
-        }))
-      }, 500);
-    } else {
+    if (!keyword) {
       dispatch(unmountFilteredNews())
     }
+  }, [keyword]);
 
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [keyword, onSearch]);
+  const onKeywordSearch = (e) => {
+    if (e.key === 'Enter') {
+      dispatch(unmountFilteredNews())
+      // dispatch(fetchFilteredNewsApi({
+      //   keyword
+      // }))
+      dispatch(fetchFilteredTheGuardianApi({
+        keyword,
+        section: filterCategory?.value,
+      }))
+    }
+  };
+
+  const onCategorySearch = (selected) => {
+    setFilterCategory(selected)
+
+    console.log(selected, '<<< in iselected')
+
+    dispatch(unmountFilteredNews())
+    dispatch(fetchFilteredTheGuardianApi({
+      keyword,
+      section: selected.value,
+    }))
+  }
 
   const handleFilter = () => {
     const filters = {
@@ -62,6 +77,7 @@ const SearchAndFilter = ({ onSearch, onFilter }) => {
           type="text"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
+          onKeyDown={onKeywordSearch}
           placeholder="Search by keyword..."
           className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pl-10 w-full"
         />
@@ -82,7 +98,7 @@ const SearchAndFilter = ({ onSearch, onFilter }) => {
           <div className="col-span-1">
             <Select
               value={filterCategory}
-              onChange={(selectedOption) => setFilterCategory(selectedOption)}
+              onChange={(selectedOption) => onCategorySearch(selectedOption)}
               options={categories}
               placeholder="Filter by Category"
               className="mt-4 w-full"
