@@ -3,6 +3,9 @@ import {
   SET_NEWS_API_HEADLINE,
   SET_NEWS_API_HEADLINE_SUCCESS,
   SET_NEWS_API_HEADLINE_FAILURE,
+  SET_NEWS_CATEGORIES_HEADLINE,
+  SET_FILTERED_NEWS_API,
+  UNMOUNT_FILTERED_NEWS_API
 } from './actionTypes'
 
 // Action Creators
@@ -13,6 +16,10 @@ export const fetchNewsApiHeadlineSuccess = () => ({
 export const fetchNewsApiHeadlineFailure = () => ({
   type: SET_NEWS_API_HEADLINE_FAILURE,
 });
+
+export const unmountFilteredNews = () => ({
+  type: UNMOUNT_FILTERED_NEWS_API
+})
 
 // Thunk Action Creator
 export const fetchNewsApiHeadline = () => async (dispatch) => {
@@ -51,10 +58,11 @@ export const fetchNewsApiHeadline = () => async (dispatch) => {
   }
 };
 
-export const fetchTheGuardianApiHeadline = () => async (dispatch) => {
-  const apiUrl = process.env.REACT_APP_API_BASE_URL + '/guardian';
+export const fetchTheGuardianApiHeadline = () => async (dispatch, state) => {
+  const apiUrl = process.env.REACT_APP_API_BASE_URL + '/guardian-home';
 
   const { data } = await axios.get(apiUrl)
+  const { categories: stateCategories } = state().news
 
   try {
     const filteredArticles = data.response?.results.filter(article => {
@@ -78,9 +86,22 @@ export const fetchTheGuardianApiHeadline = () => async (dispatch) => {
       createdDate: article.webPublicationDate,
     }))
 
+    let categories = news.map(({ sectionId }) => ({
+      value: sectionId,
+      label: sectionId.trim().charAt(0).toUpperCase() + sectionId.slice(1)
+    }))
+
+    categories = [...categories, ...stateCategories].filter((obj, index, self) =>
+      index === self.findIndex((item) => item.value === obj.value)
+    );
+
     dispatch({
       type: SET_NEWS_API_HEADLINE,
       payload: news
+    })
+    dispatch({
+      type: SET_NEWS_CATEGORIES_HEADLINE,
+      payload: categories
     })
     dispatch(fetchNewsApiHeadlineSuccess());
   } catch (err) {
@@ -88,10 +109,11 @@ export const fetchTheGuardianApiHeadline = () => async (dispatch) => {
   }
 };
 
-export const fetchNewYorkTimesApiHeadline = () => async (dispatch) => {
+export const fetchNewYorkTimesApiHeadline = () => async (dispatch, state) => {
   const apiUrl = process.env.REACT_APP_API_BASE_URL + '/nyt-home';
 
   const { data } = await axios.get(apiUrl)
+  const { categories: stateCategories } = state().news
 
   try {
     const filteredArticles = data.results.filter(article => {
@@ -113,12 +135,68 @@ export const fetchNewYorkTimesApiHeadline = () => async (dispatch) => {
       createdDate: article.created_date
     }))
 
+    let categories = news.map(({ section }) => ({
+      value: section,
+      label: section.trim().charAt(0).toUpperCase() + section.slice(1)
+    }))
+
+    categories = [...categories, ...stateCategories].filter((obj, index, self) =>
+      index === self.findIndex((item) => item.value === obj.value)
+    );
+
     dispatch({
       type: SET_NEWS_API_HEADLINE,
       payload: news
+    })
+    dispatch({
+      type: SET_NEWS_CATEGORIES_HEADLINE,
+      payload: categories
     })
     dispatch(fetchNewsApiHeadlineSuccess());
   } catch (err) {
     dispatch(fetchNewsApiHeadlineFailure());
   }
 };
+
+export const fetchFilteredNewsApi = (payload) => async (dispatch) => {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = (d.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+  const day = d.getDate().toString().padStart(2, '0');
+  const monthAgoDate = `${year}-${month - 1}-${day}`;
+  const todaysDate = `${year}-${month}-${day}`;
+
+  const apiUrl = process.env.REACT_APP_API_BASE_URL + `/news-api-filter?q=${payload.keyword}&from=${payload.dateFrom || monthAgoDate}&to=${payload.dateTo || todaysDate}&sortBy=popularity`;
+
+  const { data } = await axios.get(apiUrl)
+
+  try {
+    const filteredArticles = data.articles.filter(article => {
+      return (
+        article.source?.name &&
+        article.author &&
+        article.title &&
+        article.description &&
+        article.url &&
+        article.urlToImage &&
+        article.publishedAt
+      );
+    });
+
+    const news = filteredArticles.map(article => ({
+      ...article,
+      title: article.title.split('-').length > 1 ? article.title.split('-').slice(0, -1).join('').trim() : article.title,
+      source: article.source.name,
+      imageUrl: article.urlToImage,
+      createdDate: article.publishedAt,
+    }))
+
+    dispatch({
+      type: SET_FILTERED_NEWS_API,
+      payload: news.slice(0, 10)
+    })
+    dispatch(fetchNewsApiHeadlineSuccess());
+  } catch (err) {
+    dispatch(fetchNewsApiHeadlineFailure());
+  }
+}

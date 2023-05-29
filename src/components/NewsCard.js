@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 const NewsCard = () => {
   const [news, setNews] = useState([])
 
-  const { headlines } = useSelector((state) => state.news)
+  const { isLoadingHeadline, headlines, filteredNews } = useSelector((state) => state.news)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -20,10 +20,10 @@ const NewsCard = () => {
     }
   }, [headlines])
 
-  return (
+  const NewsCardTemplate = ({ contents }) => (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {news.map((item, index) => (
+        {contents.map((item, index) => (
           <div key={index} className="card flex flex-col shadow-box shadow-xl select-none">
             <div className="rounded-t-lg overflow-hidden">
               <img src={item.imageUrl} alt={item.title} className="w-full h-56 object-cover" />
@@ -46,7 +46,23 @@ const NewsCard = () => {
         ))}
       </div>
     </div>
-  );
+  )
+
+  if (isLoadingHeadline) {
+    return (
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        Loading news...
+      </div>
+    )
+  } else {
+    if (filteredNews.length) {
+      return <NewsCardTemplate contents={filteredNews} />
+    }
+
+    if (news.length) {
+      return <NewsCardTemplate contents={news} />
+    }
+  }
 };
 
 export default NewsCard
