@@ -3,18 +3,10 @@ import NewsCard from "../components/NewsCard"
 import FilterInputComponent from "../components/FilterInputComponent";
 
 const HomePage = () => {
-  const onSearch = () => {
-
-  }
-
-  const onFilter = () => {
-
-  }
-
   return (
     <>
       <HeaderNav />
-      <FilterInputComponent onSearch={onSearch} onFilter={onFilter} />
+      <FilterInputComponent />
       <NewsCard />
     </>
   );
