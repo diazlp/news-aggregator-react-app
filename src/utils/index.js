@@ -5,10 +5,16 @@ export default class Utils {
 
   static getUniqueCategories(newCategories, existingCategories) {
     const combinedCategories = [...newCategories, ...existingCategories];
-    const uniqueCategories = combinedCategories.filter((obj, index, self) =>
+    return combinedCategories.filter((obj, index, self) =>
       index === self.findIndex((item) => item.value === obj.value)
     );
-    return uniqueCategories;
+  }
+
+  static getUniqueSources(newSources, existingSources) {
+    const combinedSources = [...newSources, ...existingSources];
+    return combinedSources.filter((obj, index, self) =>
+      index === self.findIndex((item) => item.value === obj.value)
+    );
   }
 
   static getDefaultSearchDate() {
