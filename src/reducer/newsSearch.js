@@ -1,14 +1,19 @@
 import {
   SET_NEWS_HEADLINE,
+  SET_NEWS_HEADLINE_REQUEST,
   SET_NEWS_HEADLINE_SUCCESS,
   SET_NEWS_HEADLINE_FAILURE,
   SET_NEWS_CATEGORIES_HEADLINE,
   SET_FILTERED_NEWS,
-  UNMOUNT_FILTERED_NEWS
+  SET_FILTERED_NEWS_REQUEST,
+  SET_FILTERED_NEWS_SUCCESS,
+  SET_FILTERED_NEWS_FAILURE,
+  UNMOUNT_FILTERED_NEWS,
 } from "../actions/actionTypes";
 
 const initialState = {
-  isLoadingHeadline: true,
+  isHeadlineLoading: false,
+  isSearchLoading: false,
   isSearchedNews: false,
   headlines: [],
   categories: [],
@@ -41,18 +46,46 @@ const newsReducer = (state = initialState, action) => {
         ...state,
         filteredNews: [],
         isSearchedNews: false,
+        isSearchLoading: false,
+      }
+
+    case SET_NEWS_HEADLINE_REQUEST:
+      return {
+        ...state,
+        isHeadlineLoading: true,
       }
 
     case SET_NEWS_HEADLINE_SUCCESS:
       return {
         ...state,
-        isLoadingHeadline: false,
+        isHeadlineLoading: false,
       }
 
     case SET_NEWS_HEADLINE_FAILURE:
       return {
         ...state,
-        isLoadingHeadline: false
+        isHeadlineLoading: false
+      }
+
+    case SET_FILTERED_NEWS_REQUEST:
+      return {
+        ...state,
+        filteredNews: [],
+        isSearchLoading: true
+      }
+
+    case SET_FILTERED_NEWS_SUCCESS:
+      return {
+        ...state,
+        isSearchLoading: false,
+        isSearchedNews: true,
+      }
+
+    case SET_FILTERED_NEWS_FAILURE:
+      return {
+        ...state,
+        isSearchLoading: false,
+        isSearchedNews: false,
       }
 
     default:

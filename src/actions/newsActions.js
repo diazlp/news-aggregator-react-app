@@ -1,23 +1,33 @@
 import axios from "axios";
 import {
   SET_NEWS_HEADLINE,
+  SET_NEWS_HEADLINE_REQUEST,
   SET_NEWS_HEADLINE_SUCCESS,
   SET_NEWS_HEADLINE_FAILURE,
   SET_NEWS_CATEGORIES_HEADLINE,
   SET_FILTERED_NEWS,
+  SET_FILTERED_NEWS_REQUEST,
   SET_FILTERED_NEWS_SUCCESS,
   SET_FILTERED_NEWS_FAILURE,
-  UNMOUNT_FILTERED_NEWS
+  UNMOUNT_FILTERED_NEWS,
 } from "../actions/actionTypes";
 import Utils from "../utils";
 
 // Action Creators
+export const fetchNewsHeadlineRequest = () => ({
+  type: SET_NEWS_HEADLINE_REQUEST,
+});
+
 export const fetchNewsHeadlineSuccess = () => ({
   type: SET_NEWS_HEADLINE_SUCCESS,
 });
 
 export const fetchNewsHeadlineFailure = () => ({
   type: SET_NEWS_HEADLINE_FAILURE,
+});
+
+export const fetchFilteredNewsRequest = () => ({
+  type: SET_FILTERED_NEWS_REQUEST,
 });
 
 export const fetchFilteredNewsSuccess = () => ({
@@ -35,6 +45,7 @@ export const unmountFilteredNews = () => ({
 // Thunk Action Creator
 export const fetchNewsApiHeadline = () => async (dispatch) => {
   const apiUrl = process.env.REACT_APP_API_BASE_URL + '/news-api-headline';
+  dispatch(fetchNewsHeadlineRequest())
 
   try {
     const { data: news } = await axios.get(apiUrl)
@@ -51,6 +62,7 @@ export const fetchNewsApiHeadline = () => async (dispatch) => {
 
 export const fetchTheGuardianApiHeadline = () => async (dispatch, getState) => {
   const apiUrl = process.env.REACT_APP_API_BASE_URL + '/guardian-home';
+  dispatch(fetchNewsHeadlineRequest())
 
   try {
     const { data: news } = await axios.get(apiUrl)
@@ -77,6 +89,7 @@ export const fetchTheGuardianApiHeadline = () => async (dispatch, getState) => {
 
 export const fetchNewYorkTimesApiHeadline = () => async (dispatch, getState) => {
   const apiUrl = process.env.REACT_APP_API_BASE_URL + '/nyt-home';
+  dispatch(fetchNewsHeadlineRequest())
 
   try {
     const { data: news } = await axios.get(apiUrl)
@@ -104,6 +117,7 @@ export const fetchNewYorkTimesApiHeadline = () => async (dispatch, getState) => 
 export const fetchFilteredNewsApi = (payload) => async (dispatch, getState) => {
   const { monthAgoDate, todaysDate } = Utils.getDefaultSearchDate()
   const apiUrl = process.env.REACT_APP_API_BASE_URL + `/news-api-filter?q=${payload.keyword}&from=${payload.selectedDate || monthAgoDate}&to=${payload.selectedDate || todaysDate}`;
+  dispatch(fetchFilteredNewsRequest())
 
   try {
     const { data } = await axios.get(apiUrl)
@@ -122,6 +136,7 @@ export const fetchFilteredNewsApi = (payload) => async (dispatch, getState) => {
 export const fetchFilteredTheGuardianApi = (payload) => async (dispatch, getState) => {
   const { monthAgoDate, todaysDate } = Utils.getDefaultSearchDate()
   const apiUrl = process.env.REACT_APP_API_BASE_URL + `/guardian-filter?q=${payload.keyword}&section=${payload.section || ""}&from-date=${payload.selectedDate || monthAgoDate}&to-date=${payload.selectedDate || todaysDate}`;
+  dispatch(fetchFilteredNewsRequest())
 
   try {
     const { data } = await axios.get(apiUrl)
@@ -140,6 +155,7 @@ export const fetchFilteredTheGuardianApi = (payload) => async (dispatch, getStat
 export const fetchFilteredNewYorkTimesApi = (payload) => async (dispatch, getState) => {
   const { monthAgoDate, todaysDate } = Utils.getDefaultSearchDate()
   const apiUrl = process.env.REACT_APP_API_BASE_URL + `/nyt-filter?q=${payload.keyword}&section=${payload.section || ""}&from-date=${payload.selectedDate || monthAgoDate}&to-date=${payload.selectedDate || todaysDate}`;
+  dispatch(fetchFilteredNewsRequest())
 
   try {
     const { data } = await axios.get(apiUrl)

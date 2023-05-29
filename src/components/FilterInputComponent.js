@@ -11,7 +11,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 const SearchAndFilter = () => {
   const dispatch = useDispatch()
 
-  const { categories, isSearchedNews } = useSelector((state) => state.news)
+  const { isHeadlineLoading, isSearchLoading, categories, isSearchedNews } = useSelector((state) => state.news)
 
   // Calculate the maximum and minimum dates allowed
   const { monthAgoDate, todaysDate } = Utils.getDefaultSearchDate()
@@ -36,7 +36,7 @@ const SearchAndFilter = () => {
 
   const onKeywordSearch = (e) => {
     if (e.key === 'Enter') {
-      dispatch(unmountFilteredNews())
+
       // dispatch(fetchFilteredNewsApi({
       //   keyword,
       //   selectedDate: filterDate && Utils.getFormattedDate(filterDate)
@@ -57,7 +57,6 @@ const SearchAndFilter = () => {
   const onCategoryFilter = (selected) => {
     setFilterCategory(selected)
 
-    dispatch(unmountFilteredNews())
     dispatch(fetchFilteredTheGuardianApi({
       keyword,
       section: selected.value,
@@ -71,11 +70,9 @@ const SearchAndFilter = () => {
   }
 
   const onDateFilter = (date) => {
+    const formattedDate = Utils.getFormattedDate(date)
     setFilterDate(date)
 
-    const formattedDate = Utils.getFormattedDate(date)
-
-    dispatch(unmountFilteredNews())
     // dispatch(fetchFilteredNewsApi({
     //   keyword,
     //   selectedDate: formattedDate
@@ -101,7 +98,8 @@ const SearchAndFilter = () => {
           onChange={(e) => setKeyword(e.target.value)}
           onKeyDown={onKeywordSearch}
           placeholder="Search by keyword..."
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pl-10 w-full"
+          className={`px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pl-10 w-full ${(isHeadlineLoading || isSearchLoading) && 'bg-gray-200'}`}
+          disabled={isSearchLoading || isHeadlineLoading}
         />
         <FaSearch className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-600" />
       </div>
@@ -112,9 +110,10 @@ const SearchAndFilter = () => {
               selected={filterDate}
               onChange={(date) => onDateFilter(date)}
               placeholderText="Filter by Date"
-              className="mt-4 w-full rounded-sm"
+              className={`mt-4 w-full rounded-sm ${isSearchLoading || isHeadlineLoading ? 'bg-gray-200' : ''}`}
               minDate={new Date(monthAgoDate)}
               maxDate={new Date(todaysDate)}
+              disabled={isSearchLoading || isHeadlineLoading}
             />
           </div>
           <div className="col-span-1">
@@ -124,6 +123,7 @@ const SearchAndFilter = () => {
               options={categories}
               placeholder="Filter by Category"
               className="mt-4 w-full"
+              isDisabled={isHeadlineLoading || isSearchLoading}
             />
           </div>
           <div className="col-span-1">
@@ -133,6 +133,7 @@ const SearchAndFilter = () => {
               options={sourceOptions}
               placeholder="Filter by Source"
               className="mt-4 w-full"
+              isDisabled={isHeadlineLoading || isSearchLoading}
             />
           </div>
         </div>

@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import { fetchNewYorkTimesApiHeadline, fetchNewsApiHeadline, fetchTheGuardianApiHeadline } from "../actions/newsActions"
 import { useDispatch, useSelector } from 'react-redux';
+import NewsSkeleton from './NewsSkeleton';
 
 const NewsCard = () => {
   const [news, setNews] = useState([])
 
-  const { isLoadingHeadline, headlines, filteredNews } = useSelector((state) => state.news)
+  const { isHeadlineLoading, isSearchLoading, isSearchedNews, headlines, filteredNews } = useSelector((state) => state.news)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -19,6 +20,16 @@ const NewsCard = () => {
       setNews(headlines)
     }
   }, [headlines])
+
+  const NewsLoadingTemplate = () => (
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {[...Array(6)].map((_, index) => (
+          <NewsSkeleton key={index} />
+        ))}
+      </div>
+    </div>
+  )
 
   const NewsCardTemplate = ({ contents }) => (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -48,15 +59,19 @@ const NewsCard = () => {
     </div>
   )
 
-  if (isLoadingHeadline) {
-    return (
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        Loading news...
-      </div>
-    )
+  if (isHeadlineLoading || isSearchLoading) {
+    return <NewsLoadingTemplate />
   } else {
     if (filteredNews.length) {
       return <NewsCardTemplate contents={filteredNews} />
+    }
+
+    if (isSearchedNews && !filteredNews.length) {
+      return (
+        <div className="flex items-center justify-center h-full">
+          <h2 className="text-3xl font-bold text-gray-500">No Results Found</h2>
+        </div>
+      );
     }
 
     if (news.length) {
