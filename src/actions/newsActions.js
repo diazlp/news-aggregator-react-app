@@ -9,6 +9,7 @@ import {
   SET_FILTERED_NEWS_API_FAILURE,
   UNMOUNT_FILTERED_NEWS_API
 } from './actionTypes'
+import Utils from "../utils";
 
 // Action Creators
 export const fetchNewsApiHeadlineSuccess = () => ({
@@ -167,13 +168,7 @@ export const fetchNewYorkTimesApiHeadline = () => async (dispatch, state) => {
 };
 
 export const fetchFilteredNewsApi = (payload) => async (dispatch, state) => {
-  const d = new Date();
-  const year = d.getFullYear();
-  const month = (d.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
-  const day = d.getDate().toString().padStart(2, '0');
-  const monthAgoDate = `${year}-${month - 1}-${day}`;
-  const todaysDate = `${year}-${month}-${day}`;
-
+  const { monthAgoDate, todaysDate } = Utils.getDefaultDate()
   const apiUrl = process.env.REACT_APP_API_BASE_URL + `/news-api-filter?q=${payload.keyword}&from=${payload.dateFrom || monthAgoDate}&to=${payload.dateTo || todaysDate}&sortBy=popularity`;
 
   try {
@@ -213,13 +208,7 @@ export const fetchFilteredNewsApi = (payload) => async (dispatch, state) => {
 }
 
 export const fetchFilteredTheGuardianApi = (payload) => async (dispatch, state) => {
-  const d = new Date();
-  const year = d.getFullYear();
-  const month = (d.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
-  const day = d.getDate().toString().padStart(2, '0');
-  const monthAgoDate = `${year}-${month - 1}-${day}`;
-  const todaysDate = `${year}-${month}-${day}`;
-
+  const { monthAgoDate, todaysDate } = Utils.getDefaultDate()
   const apiUrl = process.env.REACT_APP_API_BASE_URL + `/guardian-filter?q=${payload.keyword}&section=${payload.section || ""}&from-date=${payload.dateFrom || monthAgoDate}&to-date=${payload.dateTo || todaysDate}`;
 
   try {
