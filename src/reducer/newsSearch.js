@@ -1,10 +1,10 @@
 import {
-  SET_NEWS_API_HEADLINE,
-  SET_NEWS_API_HEADLINE_SUCCESS,
-  SET_NEWS_API_HEADLINE_FAILURE,
+  SET_NEWS_HEADLINE,
+  SET_NEWS_HEADLINE_SUCCESS,
+  SET_NEWS_HEADLINE_FAILURE,
   SET_NEWS_CATEGORIES_HEADLINE,
-  SET_FILTERED_NEWS_API,
-  UNMOUNT_FILTERED_NEWS_API
+  SET_FILTERED_NEWS,
+  UNMOUNT_FILTERED_NEWS
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -17,7 +17,7 @@ const initialState = {
 
 const newsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SET_NEWS_API_HEADLINE:
+    case SET_NEWS_HEADLINE:
       return {
         ...state,
         headlines: [...state.headlines, ...action.payload]
@@ -29,27 +29,27 @@ const newsReducer = (state = initialState, action) => {
         categories: action.payload
       }
 
-    case SET_FILTERED_NEWS_API:
+    case SET_FILTERED_NEWS:
       return {
         ...state,
         filteredNews: action.payload,
         isSearchedNews: true,
       }
 
-    case UNMOUNT_FILTERED_NEWS_API:
+    case UNMOUNT_FILTERED_NEWS:
       return {
         ...state,
         filteredNews: [],
         isSearchedNews: false,
       }
 
-    case SET_NEWS_API_HEADLINE_SUCCESS:
+    case SET_NEWS_HEADLINE_SUCCESS:
       return {
         ...state,
         isLoadingHeadline: false,
       }
 
-    case SET_NEWS_API_HEADLINE_FAILURE:
+    case SET_NEWS_HEADLINE_FAILURE:
       return {
         ...state,
         isLoadingHeadline: false

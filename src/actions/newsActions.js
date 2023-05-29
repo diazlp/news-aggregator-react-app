@@ -1,35 +1,35 @@
 import axios from "axios";
 import {
-  SET_NEWS_API_HEADLINE,
-  SET_NEWS_API_HEADLINE_SUCCESS,
-  SET_NEWS_API_HEADLINE_FAILURE,
+  SET_NEWS_HEADLINE,
+  SET_NEWS_HEADLINE_SUCCESS,
+  SET_NEWS_HEADLINE_FAILURE,
   SET_NEWS_CATEGORIES_HEADLINE,
-  SET_FILTERED_NEWS_API,
-  SET_FILTERED_NEWS_API_SUCCESS,
-  SET_FILTERED_NEWS_API_FAILURE,
-  UNMOUNT_FILTERED_NEWS_API
-} from './actionTypes'
+  SET_FILTERED_NEWS,
+  SET_FILTERED_NEWS_SUCCESS,
+  SET_FILTERED_NEWS_FAILURE,
+  UNMOUNT_FILTERED_NEWS
+} from "../actions/actionTypes";
 import Utils from "../utils";
 
 // Action Creators
-export const fetchNewsApiHeadlineSuccess = () => ({
-  type: SET_NEWS_API_HEADLINE_SUCCESS,
+export const fetchNewsHeadlineSuccess = () => ({
+  type: SET_NEWS_HEADLINE_SUCCESS,
 });
 
-export const fetchNewsApiHeadlineFailure = () => ({
-  type: SET_NEWS_API_HEADLINE_FAILURE,
+export const fetchNewsHeadlineFailure = () => ({
+  type: SET_NEWS_HEADLINE_FAILURE,
 });
 
-export const fetchFilteredNewsApiSuccess = () => ({
-  type: SET_FILTERED_NEWS_API_SUCCESS,
+export const fetchFilteredNewsSuccess = () => ({
+  type: SET_FILTERED_NEWS_SUCCESS,
 });
 
-export const fetchFilteredNewsApiFailure = () => ({
-  type: SET_FILTERED_NEWS_API_SUCCESS,
+export const fetchFilteredNewsFailure = () => ({
+  type: SET_FILTERED_NEWS_FAILURE,
 });
 
 export const unmountFilteredNews = () => ({
-  type: UNMOUNT_FILTERED_NEWS_API
+  type: UNMOUNT_FILTERED_NEWS
 })
 
 // Thunk Action Creator
@@ -60,12 +60,12 @@ export const fetchNewsApiHeadline = () => async (dispatch) => {
     }))
 
     dispatch({
-      type: SET_NEWS_API_HEADLINE,
+      type: SET_NEWS_HEADLINE,
       payload: news
     })
-    dispatch(fetchNewsApiHeadlineSuccess());
+    dispatch(fetchNewsHeadlineSuccess());
   } catch (err) {
-    dispatch(fetchNewsApiHeadlineFailure());
+    dispatch(fetchNewsHeadlineFailure());
   }
 };
 
@@ -106,16 +106,16 @@ export const fetchTheGuardianApiHeadline = () => async (dispatch, state) => {
     );
 
     dispatch({
-      type: SET_NEWS_API_HEADLINE,
+      type: SET_NEWS_HEADLINE,
       payload: news
     })
     dispatch({
       type: SET_NEWS_CATEGORIES_HEADLINE,
       payload: categories
     })
-    dispatch(fetchNewsApiHeadlineSuccess());
+    dispatch(fetchNewsHeadlineSuccess());
   } catch (err) {
-    dispatch(fetchNewsApiHeadlineFailure());
+    dispatch(fetchNewsHeadlineFailure());
   }
 };
 
@@ -154,16 +154,16 @@ export const fetchNewYorkTimesApiHeadline = () => async (dispatch, state) => {
     );
 
     dispatch({
-      type: SET_NEWS_API_HEADLINE,
+      type: SET_NEWS_HEADLINE,
       payload: news
     })
     dispatch({
       type: SET_NEWS_CATEGORIES_HEADLINE,
       payload: categories
     })
-    dispatch(fetchNewsApiHeadlineSuccess());
+    dispatch(fetchNewsHeadlineSuccess());
   } catch (err) {
-    dispatch(fetchNewsApiHeadlineFailure());
+    dispatch(fetchNewsHeadlineFailure());
   }
 };
 
@@ -198,12 +198,12 @@ export const fetchFilteredNewsApi = (payload) => async (dispatch, state) => {
     news = [...news, ...state().news.filteredNews]
 
     dispatch({
-      type: SET_FILTERED_NEWS_API,
+      type: SET_FILTERED_NEWS,
       payload: news
     })
-    dispatch(fetchFilteredNewsApiSuccess());
+    dispatch(fetchFilteredNewsSuccess());
   } catch (err) {
-    dispatch(fetchFilteredNewsApiFailure());
+    dispatch(fetchFilteredNewsFailure());
   }
 }
 
@@ -238,11 +238,11 @@ export const fetchFilteredTheGuardianApi = (payload) => async (dispatch, state) 
     news = [...news, ...state().news.filteredNews]
 
     dispatch({
-      type: SET_FILTERED_NEWS_API,
+      type: SET_FILTERED_NEWS,
       payload: news
     })
-    dispatch(fetchFilteredNewsApiSuccess());
+    dispatch(fetchFilteredNewsSuccess());
   } catch (err) {
-    dispatch(fetchFilteredNewsApiFailure());
+    dispatch(fetchFilteredNewsFailure());
   }
 };
