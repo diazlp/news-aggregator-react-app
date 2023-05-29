@@ -13,80 +13,191 @@ const SearchAndFilter = () => {
 
   const { isHeadlineLoading, isSearchLoading, categories, isSearchedNews } = useSelector((state) => state.news)
 
-  // Calculate the maximum and minimum dates allowed
   const { monthAgoDate, todaysDate } = Utils.getDefaultSearchDate()
 
   const [keyword, setKeyword] = useState('');
-  const [filterDate, setFilterDate] = useState(null);
+  const [filterDate, setFilterDate] = useState('');
   const [filterCategory, setFilterCategory] = useState({ value: '', label: '' });
-  const [filterSource, setFilterSource] = useState('');
-
-  const sourceOptions = [
-    { value: 'bbc', label: 'BBC' },
-    { value: 'cnn', label: 'CNN' },
-    { value: 'nytimes', label: 'The New York Times' },
-    // Add more options as needed
-  ];
+  const [filterSource, setFilterSource] = useState({ value: '', label: '' });
 
   useEffect(() => {
     if (!keyword) {
       dispatch(unmountFilteredNews())
+      setFilterDate('')
+      setFilterCategory({ value: '', label: '' })
+      setFilterSource({ value: '', label: '' })
     }
   }, [keyword]);
 
   const onKeywordSearch = (e) => {
     if (e.key === 'Enter') {
 
-      // dispatch(fetchFilteredNewsApi({
-      //   keyword,
-      //   selectedDate: filterDate && Utils.getFormattedDate(filterDate)
-      // }))
-      dispatch(fetchFilteredTheGuardianApi({
-        keyword,
-        section: filterCategory?.value,
-        selectedDate: filterDate && Utils.getFormattedDate(filterDate)
-      }))
-      dispatch(fetchFilteredNewYorkTimesApi({
-        keyword,
-        section: filterCategory?.value,
-        selectedDate: filterDate && Utils.getFormattedDate(filterDate)
-      }))
+      if (filterSource.value) {
+        switch (filterSource.value) {
+          case 'news-api':
+            // dispatch(fetchFilteredNewsApi({
+            //   keyword,
+            //   selectedDate: filterDate && Utils.getFormattedDate(filterDate)
+            // }))
+            break;
+
+          case 'guardian':
+            dispatch(fetchFilteredTheGuardianApi({
+              keyword,
+              section: filterCategory?.value,
+              selectedDate: filterDate && Utils.getFormattedDate(filterDate)
+            }))
+            break;
+
+          case 'nyt':
+            dispatch(fetchFilteredNewYorkTimesApi({
+              keyword,
+              section: filterCategory?.value,
+              selectedDate: filterDate && Utils.getFormattedDate(filterDate)
+            }))
+            break;
+
+          default:
+            break;
+        }
+      } else {
+        // dispatch(fetchFilteredNewsApi({
+        //   keyword,
+        //   selectedDate: filterDate && Utils.getFormattedDate(filterDate)
+        // }))
+        dispatch(fetchFilteredTheGuardianApi({
+          keyword,
+          section: filterCategory?.value,
+          selectedDate: filterDate && Utils.getFormattedDate(filterDate)
+        }))
+        dispatch(fetchFilteredNewYorkTimesApi({
+          keyword,
+          section: filterCategory?.value,
+          selectedDate: filterDate && Utils.getFormattedDate(filterDate)
+        }))
+      }
     }
   };
 
   const onCategoryFilter = (selected) => {
     setFilterCategory(selected)
 
-    dispatch(fetchFilteredTheGuardianApi({
-      keyword,
-      section: selected.value,
-      selectedDate: filterDate && Utils.getFormattedDate(filterDate)
-    }))
-    dispatch(fetchFilteredNewYorkTimesApi({
-      keyword,
-      section: selected.value,
-      selectedDate: filterDate && Utils.getFormattedDate(filterDate)
-    }))
+    if (filterSource.value) {
+      switch (filterSource.value) {
+        case 'guardian':
+          dispatch(fetchFilteredTheGuardianApi({
+            keyword,
+            section: selected.value,
+            selectedDate: filterDate && Utils.getFormattedDate(filterDate)
+          }))
+          break;
+
+        case 'nyt':
+          dispatch(fetchFilteredNewYorkTimesApi({
+            keyword,
+            section: selected.value,
+            selectedDate: filterDate && Utils.getFormattedDate(filterDate)
+          }))
+          break;
+
+        default:
+          break;
+      }
+    } else {
+      dispatch(fetchFilteredTheGuardianApi({
+        keyword,
+        section: selected.value,
+        selectedDate: filterDate && Utils.getFormattedDate(filterDate)
+      }))
+      dispatch(fetchFilteredNewYorkTimesApi({
+        keyword,
+        section: selected.value,
+        selectedDate: filterDate && Utils.getFormattedDate(filterDate)
+      }))
+    }
   }
 
   const onDateFilter = (date) => {
     const formattedDate = Utils.getFormattedDate(date)
     setFilterDate(date)
 
-    // dispatch(fetchFilteredNewsApi({
-    //   keyword,
-    //   selectedDate: formattedDate
-    // }))
-    dispatch(fetchFilteredTheGuardianApi({
-      keyword,
-      section: filterCategory?.value,
-      selectedDate: formattedDate
-    }))
-    dispatch(fetchFilteredNewYorkTimesApi({
-      keyword,
-      section: filterCategory?.value,
-      selectedDate: formattedDate
-    }))
+    if (filterSource.value) {
+      switch (filterSource.value) {
+        case 'news-api':
+          // dispatch(fetchFilteredNewsApi({
+          //   keyword,
+          //   selectedDate: formattedDate
+          // }))
+          break;
+
+        case 'guardian':
+          dispatch(fetchFilteredTheGuardianApi({
+            keyword,
+            section: filterCategory?.value,
+            selectedDate: formattedDate
+          }))
+          break;
+
+        case 'nyt':
+          dispatch(fetchFilteredNewYorkTimesApi({
+            keyword,
+            section: filterCategory?.value,
+            selectedDate: formattedDate
+          }))
+          break;
+
+        default:
+          break;
+      }
+    } else {
+      // dispatch(fetchFilteredNewsApi({
+      //   keyword,
+      //   selectedDate: formattedDate
+      // }))
+      dispatch(fetchFilteredTheGuardianApi({
+        keyword,
+        section: filterCategory?.value,
+        selectedDate: formattedDate
+      }))
+      dispatch(fetchFilteredNewYorkTimesApi({
+        keyword,
+        section: filterCategory?.value,
+        selectedDate: formattedDate
+      }))
+    }
+  }
+
+  const onSourceFilter = (source) => {
+    setFilterSource(source)
+
+    switch (source.value) {
+      case 'news-api':
+        // dispatch(fetchFilteredNewsApi({
+        //   keyword,
+        //   selectedDate: filterDate && Utils.getFormattedDate(filterDate)
+        // }))
+        setFilterCategory({ value: '', label: '' })
+        break;
+
+      case 'guardian':
+        dispatch(fetchFilteredTheGuardianApi({
+          keyword,
+          section: filterCategory?.value,
+          selectedDate: filterDate && Utils.getFormattedDate(filterDate)
+        }))
+        break;
+
+      case 'nyt':
+        dispatch(fetchFilteredNewYorkTimesApi({
+          keyword,
+          section: filterCategory?.value,
+          selectedDate: filterDate && Utils.getFormattedDate(filterDate)
+        }))
+        break;
+
+      default:
+        break;
+    }
   }
 
   return (
@@ -110,9 +221,10 @@ const SearchAndFilter = () => {
               selected={filterDate}
               onChange={(date) => onDateFilter(date)}
               placeholderText="Filter by Date"
-              className={`mt-4 w-full rounded-sm ${isSearchLoading || isHeadlineLoading ? 'bg-gray-200' : ''}`}
+              className={`mt-4 w-full rounded-md ${isSearchLoading || isHeadlineLoading ? 'bg-gray-200' : ''}`}
               minDate={new Date(monthAgoDate)}
               maxDate={new Date(todaysDate)}
+              wrapperClassName='w-full'
               disabled={isSearchLoading || isHeadlineLoading}
             />
           </div>
@@ -123,14 +235,14 @@ const SearchAndFilter = () => {
               options={categories}
               placeholder="Filter by Category"
               className="mt-4 w-full"
-              isDisabled={isHeadlineLoading || isSearchLoading}
+              isDisabled={isHeadlineLoading || isSearchLoading || filterSource.value === 'news-api'}
             />
           </div>
           <div className="col-span-1">
             <Select
-              value={filterSource}
-              onChange={(selectedOption) => setFilterSource(selectedOption)}
-              options={sourceOptions}
+              value={filterSource.value ? filterSource : ''}
+              onChange={(selectedOption) => onSourceFilter(selectedOption)}
+              options={Utils.sourceFilterOptions()}
               placeholder="Filter by Source"
               className="mt-4 w-full"
               isDisabled={isHeadlineLoading || isSearchLoading}

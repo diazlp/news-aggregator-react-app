@@ -36,4 +36,12 @@ export default class Utils {
 
     return `${year}-${month}-${day}`
   }
+
+  static sourceFilterOptions() {
+    return [
+      { value: 'news-api', label: 'NewsAPI' },
+      { value: 'guardian', label: 'The Guardian' },
+      { value: 'nyt', label: 'The New York Times' },
+    ]
+  }
 }
