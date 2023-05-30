@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import Utils from '../utils';
-import { deleteUserPreferredSources, postUserPreferredSources } from '../actions/userPreferences';
+import { deleteUserPreferredCategories, deleteUserPreferredSources, postUserPreferredCategories, postUserPreferredSources } from '../actions/userPreferences';
 
 const UserPreferencesModal = ({ isOpen, onClose }) => {
   const dispatch = useDispatch()
@@ -39,7 +39,7 @@ const UserPreferencesModal = ({ isOpen, onClose }) => {
     previousSelectedSourcesRef.current = selectedSources;
   });
 
-  const handleCategoryChange = (selectedOptions) => {
+  const onCategoryChange = (selectedOptions) => {
     const previousSelectedCategories = previousSelectedCategoriesRef.current;
     const selectedValues = selectedOptions.map((option) => option.value);
 
@@ -53,8 +53,18 @@ const UserPreferencesModal = ({ isOpen, onClose }) => {
 
     setSelectedCategories(selectedOptions);
 
-    console.log('Deleted categories:', deletedCategories);
-    console.log('Added categories:', addedCategories);
+    if (addedCategories.length) {
+      dispatch(postUserPreferredCategories({
+        user_id,
+        value: addedCategories[0].value,
+        label: addedCategories[0].label
+      }))
+    } else if (deletedCategories.length) {
+      dispatch(deleteUserPreferredCategories({
+        user_id,
+        value: deletedCategories[0].value
+      }))
+    }
   };
 
   const handleAuthorChange = (selectedOptions) => {
@@ -136,7 +146,7 @@ const UserPreferencesModal = ({ isOpen, onClose }) => {
                   value={selectedCategories}
                   isClearable={false}
                   isMulti
-                  onChange={handleCategoryChange}
+                  onChange={onCategoryChange}
                 />
               </div>
               <div className="mb-6">

@@ -32,8 +32,8 @@ const SearchAndFilter = () => {
   const onKeywordSearch = (e) => {
     if (e.key === 'Enter') {
 
-      if (filterSource.value) {
-        switch (filterSource.value) {
+      if (filterSource?.value) {
+        switch (filterSource?.value) {
           case 'news-api':
             dispatch(fetchFilteredNewsRequest())
             dispatch(fetchFilteredNewsApi({
@@ -128,8 +128,8 @@ const SearchAndFilter = () => {
     const formattedDate = Utils.getFormattedDate(date)
     setFilterDate(date)
 
-    if (filterSource.value) {
-      switch (filterSource.value) {
+    if (filterSource?.value) {
+      switch (filterSource?.value) {
         case 'news-api':
           dispatch(fetchFilteredNewsRequest())
           dispatch(fetchFilteredNewsApi({

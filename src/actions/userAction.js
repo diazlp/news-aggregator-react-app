@@ -10,6 +10,7 @@ import {
   SET_USER_LOGOUT,
   UNMOUNT_RESPONSE_STATUS_DISPLAY
 } from '../actions/actionTypes'
+import { unmountUserPreferences } from "./userPreferences";
 
 // Action Creators
 export const postUserRegisterRequest = () => ({
@@ -90,4 +91,5 @@ export const postUserLogout = () => async (dispatch) => {
   dispatch({
     type: SET_USER_LOGOUT
   })
+  dispatch(unmountUserPreferences())
 }

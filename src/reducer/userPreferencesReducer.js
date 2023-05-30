@@ -1,7 +1,11 @@
 import {
+  SET_FETCH_USER_PREFERRED_CATEGORIES,
+  SET_POST_USER_PREFERRED_CATEGORIES,
+  SET_DELETE_USER_PREFERRED_CATEGORIES,
   SET_FETCH_USER_PREFERRED_SOURCES,
   SET_POST_USER_PREFERRED_SOURCES,
-  SET_DELETE_USER_PREFERRED_SOURCES
+  SET_DELETE_USER_PREFERRED_SOURCES,
+  UNMOUNT_USER_PREFERRED_SETTINGS
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -12,6 +16,24 @@ const initialState = {
 
 const userPreferencesReducer = (state = initialState, action) => {
   switch (action.type) {
+    case SET_FETCH_USER_PREFERRED_CATEGORIES:
+      return {
+        ...state,
+        preferredCategories: action.payload
+      }
+
+    case SET_POST_USER_PREFERRED_CATEGORIES:
+      return {
+        ...state,
+        preferredCategories: [...state.preferredCategories, action.payload]
+      }
+
+    case SET_DELETE_USER_PREFERRED_CATEGORIES:
+      return {
+        ...state,
+        preferredCategories: state.preferredCategories.filter(({ value }) => value !== action.payload)
+      }
+
     case SET_FETCH_USER_PREFERRED_SOURCES:
       return {
         ...state,
@@ -28,6 +50,14 @@ const userPreferencesReducer = (state = initialState, action) => {
       return {
         ...state,
         preferredSources: state.preferredSources.filter(({ value }) => value !== action.payload)
+      }
+
+    case UNMOUNT_USER_PREFERRED_SETTINGS:
+      return {
+        ...state,
+        preferredCategories: [],
+        preferredAuthors: [],
+        preferredSources: [],
       }
 
     default:
