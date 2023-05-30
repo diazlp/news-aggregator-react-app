@@ -1,6 +1,8 @@
 import { combineReducers } from "redux";
-import newsReducer from "./newsSearch";
+import userReducer from "./userReducer";
+import newsReducer from "./newsSearchReducer";
 
 export default combineReducers({
-  news: newsReducer
+  user: userReducer,
+  news: newsReducer,
 });
