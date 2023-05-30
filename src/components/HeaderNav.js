@@ -1,22 +1,14 @@
 import { useState } from 'react';
-import { FaSignInAlt } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { postUserLogout } from '../actions/userAction';
+import { FaSignInAlt, FaSignOutAlt } from 'react-icons/fa';
+import UserFormTooltip from './UserFormTooltip';
 
 const HeaderNav = () => {
+  const dispatch = useDispatch()
   const [showTooltip, setShowTooltip] = useState(false);
-  const [isRegister, setIsRegister] = useState(false);
 
-  const toggleTooltip = () => {
-    setShowTooltip(!showTooltip);
-    setIsRegister(false);
-  };
-
-  const handleRegisterClick = () => {
-    setIsRegister(true);
-  };
-
-  const handleBackToLoginClick = () => {
-    setIsRegister(false);
-  };
+  const { isUserLoggedIn } = useSelector((state) => state.user)
 
   return (
     <header className="bg-bone-white text-black py-4 mb-4 shadow-md">
@@ -25,77 +17,27 @@ const HeaderNav = () => {
           News Aggregator
         </div>
         <div className="relative">
-          <button
-            className="select-none py-2 px-4 transition duration-300 hover:underline font-semibold flex items-center"
-            onClick={toggleTooltip}
-          >
-            Sign In <FaSignInAlt className="ml-3" />
-          </button>
-          {showTooltip && (
-            <div className="origin-top-right absolute right-0 mt-2 w-72 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-              <div className="py-4 px-6">
-                <div className="mb-4">
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    autoComplete="email"
-                    className="mt-1 px-3 py-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-                <div className="mb-4">
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    autoComplete="current-password"
-                    className="mt-1 px-3 py-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-                {isRegister ? (
-                  <>
-                    <div className="flex items-center justify-between">
-                      <button className="mr-2 px-4 py-2 text-sm text-white font-semibold bg-gray-500 hover:bg-gray-600 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                        Register
-                      </button>
-                      <div
-                        className="text-sm text-gray-700 hover:underline cursor-pointer"
-                        onClick={handleBackToLoginClick}
-                      >
-                        ← back to login
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="flex items-center justify-between">
-                      <button className="mr-2 px-4 py-2 text-sm text-white font-semibold bg-blue-500 hover:bg-blue-600 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                        Login
-                      </button>
-                      <div
-                        className="text-sm text-gray-700 hover:underline cursor-pointer"
-                        onClick={handleRegisterClick}
-                      >
-                        register →
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
+          {
+            isUserLoggedIn ? (
+              <>
+                <button
+                  className="select-none py-2 px-4 transition duration-300 hover:underline font-semibold flex items-center"
+                  onClick={() => dispatch(postUserLogout())}
+                >
+                  Logout <FaSignOutAlt className="ml-3" />
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  className="select-none py-2 px-4 transition duration-300 hover:underline font-semibold flex items-center"
+                  onClick={() => setShowTooltip(!showTooltip)}
+                >
+                  Sign In <FaSignInAlt className="ml-3" />
+                </button>
+                {showTooltip && <UserFormTooltip />}
+              </>
+            )}
         </div>
       </div>
     </header>
