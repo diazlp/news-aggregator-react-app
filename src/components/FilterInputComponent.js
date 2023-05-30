@@ -92,7 +92,7 @@ const SearchAndFilter = () => {
           dispatch(fetchFilteredNewsRequest())
           dispatch(fetchFilteredTheGuardianApi({
             keyword,
-            section: selected.value,
+            section: selected?.value,
             selectedDate: filterDate && Utils.getFormattedDate(filterDate)
           }))
           break;
@@ -101,7 +101,7 @@ const SearchAndFilter = () => {
           dispatch(fetchFilteredNewsRequest())
           dispatch(fetchFilteredNewYorkTimesApi({
             keyword,
-            section: selected.value,
+            section: selected?.value,
             selectedDate: filterDate && Utils.getFormattedDate(filterDate)
           }))
           break;
@@ -113,12 +113,12 @@ const SearchAndFilter = () => {
       dispatch(fetchFilteredNewsRequest())
       dispatch(fetchFilteredTheGuardianApi({
         keyword,
-        section: selected.value,
+        section: selected?.value,
         selectedDate: filterDate && Utils.getFormattedDate(filterDate)
       }))
       dispatch(fetchFilteredNewYorkTimesApi({
         keyword,
-        section: selected.value,
+        section: selected?.value,
         selectedDate: filterDate && Utils.getFormattedDate(filterDate)
       }))
     }
@@ -181,7 +181,7 @@ const SearchAndFilter = () => {
   const onSourceFilter = (source) => {
     setFilterSource(source)
 
-    switch (source.value) {
+    switch (source?.value) {
       case 'news-api':
         dispatch(fetchFilteredNewsRequest())
         dispatch(fetchFilteredNewsApi({
@@ -244,22 +244,24 @@ const SearchAndFilter = () => {
           </div>
           <div className="col-span-1">
             <Select
-              value={filterCategory.value ? filterCategory : ''}
+              value={filterCategory?.value ? filterCategory : ''}
               onChange={(selectedOption) => onCategoryFilter(selectedOption)}
               options={categories}
               placeholder="Filter by Category"
               className="mt-4 w-full"
-              isDisabled={isHeadlineLoading || isSearchLoading || filterSource.value === 'news-api'}
+              isDisabled={isHeadlineLoading || isSearchLoading || filterSource?.value === 'news-api'}
+              isClearable
             />
           </div>
           <div className="col-span-1">
             <Select
-              value={filterSource.value ? filterSource : ''}
+              value={filterSource?.value ? filterSource : ''}
               onChange={(selectedOption) => onSourceFilter(selectedOption)}
               options={Utils.sourceFilterOptions()}
               placeholder="Filter by Source"
               className="mt-4 w-full"
               isDisabled={isHeadlineLoading || isSearchLoading}
+              isClearable
             />
           </div>
         </div>

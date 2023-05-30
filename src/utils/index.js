@@ -10,7 +10,7 @@ export default class Utils {
     );
   }
 
-  static getUniqueSources(newSources, existingSources) {
+  static getUniqueAuthors(newSources, existingSources) {
     const combinedSources = [...newSources, ...existingSources];
     return combinedSources.filter((obj, index, self) =>
       index === self.findIndex((item) => item.value === obj.value)

@@ -4,7 +4,7 @@ import { postUserLogin, postUserRegister } from '../actions/userAction';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 import { AiOutlineLoading } from 'react-icons/ai';
 
-const UserFormTooltip = () => {
+const UserFormTooltip = ({ onClose }) => {
   const dispatch = useDispatch()
   const [isRegister, setIsRegister] = useState(false);
   const [formPayload, setFormPayload] = useState({ email: '', password: '' })

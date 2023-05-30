@@ -4,6 +4,7 @@ import {
   SET_NEWS_HEADLINE_SUCCESS,
   SET_NEWS_HEADLINE_FAILURE,
   SET_NEWS_CATEGORIES_HEADLINE,
+  SET_NEWS_AUTHORS_HEADLINE,
   SET_FILTERED_NEWS,
   SET_FILTERED_NEWS_REQUEST,
   SET_FILTERED_NEWS_SUCCESS,
@@ -17,6 +18,7 @@ const initialState = {
   isSearchedNews: false,
   headlines: [],
   categories: [],
+  authors: [],
   filteredNews: [],
 }
 
@@ -32,6 +34,12 @@ const newsReducer = (state = initialState, action) => {
       return {
         ...state,
         categories: action.payload
+      }
+
+    case SET_NEWS_AUTHORS_HEADLINE:
+      return {
+        ...state,
+        authors: action.payload
       }
 
     case SET_FILTERED_NEWS:

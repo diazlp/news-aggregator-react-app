@@ -5,6 +5,7 @@ import {
   SET_NEWS_HEADLINE_SUCCESS,
   SET_NEWS_HEADLINE_FAILURE,
   SET_NEWS_CATEGORIES_HEADLINE,
+  SET_NEWS_AUTHORS_HEADLINE,
   SET_FILTERED_NEWS,
   SET_FILTERED_NEWS_REQUEST,
   SET_FILTERED_NEWS_SUCCESS,
@@ -43,16 +44,26 @@ export const unmountFilteredNews = () => ({
 })
 
 // Thunk Action Creator
-export const fetchNewsApiHeadline = () => async (dispatch) => {
+export const fetchNewsApiHeadline = () => async (dispatch, getState) => {
   const apiUrl = process.env.REACT_APP_API_BASE_URL + '/news-api-headline';
   dispatch(fetchNewsHeadlineRequest())
 
   try {
     const { data: news } = await axios.get(apiUrl)
 
+    const authors = news.map(({ author }) => ({
+      value: author,
+      label: author
+    }))
+    const uniqueAuthors = Utils.getUniqueAuthors(authors, getState().news.authors)
+
     dispatch({
       type: SET_NEWS_HEADLINE,
       payload: news
+    })
+    dispatch({
+      type: SET_NEWS_AUTHORS_HEADLINE,
+      payload: uniqueAuthors
     })
     dispatch(fetchNewsHeadlineSuccess());
   } catch (err) {
