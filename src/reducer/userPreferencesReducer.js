@@ -2,6 +2,9 @@ import {
   SET_FETCH_USER_PREFERRED_CATEGORIES,
   SET_POST_USER_PREFERRED_CATEGORIES,
   SET_DELETE_USER_PREFERRED_CATEGORIES,
+  SET_FETCH_USER_PREFERRED_AUTHORS,
+  SET_POST_USER_PREFERRED_AUTHORS,
+  SET_DELETE_USER_PREFERRED_AUTHORS,
   SET_FETCH_USER_PREFERRED_SOURCES,
   SET_POST_USER_PREFERRED_SOURCES,
   SET_DELETE_USER_PREFERRED_SOURCES,
@@ -32,6 +35,24 @@ const userPreferencesReducer = (state = initialState, action) => {
       return {
         ...state,
         preferredCategories: state.preferredCategories.filter(({ value }) => value !== action.payload)
+      }
+
+    case SET_FETCH_USER_PREFERRED_AUTHORS:
+      return {
+        ...state,
+        preferredAuthors: action.payload
+      }
+
+    case SET_POST_USER_PREFERRED_AUTHORS:
+      return {
+        ...state,
+        preferredAuthors: [...state.preferredAuthors, action.payload]
+      }
+
+    case SET_DELETE_USER_PREFERRED_AUTHORS:
+      return {
+        ...state,
+        preferredAuthors: state.preferredAuthors.filter(({ value }) => value !== action.payload)
       }
 
     case SET_FETCH_USER_PREFERRED_SOURCES:

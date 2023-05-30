@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import Utils from '../utils';
-import { deleteUserPreferredCategories, deleteUserPreferredSources, postUserPreferredCategories, postUserPreferredSources } from '../actions/userPreferences';
+import { deleteUserPreferredAuthors, deleteUserPreferredCategories, deleteUserPreferredSources, postUserPreferredAuthors, postUserPreferredCategories, postUserPreferredSources } from '../actions/userPreferences';
 
 const UserPreferencesModal = ({ isOpen, onClose }) => {
   const dispatch = useDispatch()
@@ -23,8 +23,8 @@ const UserPreferencesModal = ({ isOpen, onClose }) => {
     if (preferredCategories.length) {
       setSelectedCategories(preferredCategories)
     }
-    if (selectedAuthors.length) {
-      setSelectedAuthors(selectedAuthors)
+    if (preferredAuthors.length) {
+      setSelectedAuthors(preferredAuthors)
     }
     if (preferredSources.length) {
       setSelectedSources(preferredSources)
@@ -67,7 +67,7 @@ const UserPreferencesModal = ({ isOpen, onClose }) => {
     }
   };
 
-  const handleAuthorChange = (selectedOptions) => {
+  const onAuthorChange = (selectedOptions) => {
     const previousSelectedAuthors = previousSelectedAuthorsRef.current;
     const selectedValues = selectedOptions.map((option) => option.value);
 
@@ -81,8 +81,19 @@ const UserPreferencesModal = ({ isOpen, onClose }) => {
 
     setSelectedAuthors(selectedOptions);
 
-    console.log('Deleted authors:', deletedAuthors);
-    console.log('Added authors:', addedAuthors);
+
+    if (addedAuthors.length) {
+      dispatch(postUserPreferredAuthors({
+        user_id,
+        value: addedAuthors[0].value,
+        label: addedAuthors[0].label
+      }))
+    } else if (deletedAuthors.length) {
+      dispatch(deleteUserPreferredAuthors({
+        user_id,
+        value: deletedAuthors[0].value
+      }))
+    }
   };
 
   const onSourceChange = (selectedOptions) => {
@@ -160,7 +171,7 @@ const UserPreferencesModal = ({ isOpen, onClose }) => {
                   value={selectedAuthors}
                   isClearable={false}
                   isMulti
-                  onChange={handleAuthorChange}
+                  onChange={onAuthorChange}
                 />
               </div>
               <div className="mb-6">

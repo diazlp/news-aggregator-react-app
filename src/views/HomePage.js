@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserPreferredCategories, fetchUserPreferredSources } from "../actions/userPreferences";
+import { fetchUserPreferredAuthors, fetchUserPreferredCategories, fetchUserPreferredSources } from "../actions/userPreferences";
 import HeaderNav from "../components/HeaderNav";
 import NewsCard from "../components/NewsCard"
 import FilterInputComponent from "../components/FilterInputComponent";
@@ -14,6 +14,7 @@ const HomePage = () => {
     if (isUserLoggedIn && user_id !== 0) {
       dispatch(fetchUserPreferredSources({ user_id }))
       dispatch(fetchUserPreferredCategories({ user_id }))
+      dispatch(fetchUserPreferredAuthors({ user_id }))
     }
   }, [isUserLoggedIn, user_id])
 

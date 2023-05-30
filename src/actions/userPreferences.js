@@ -3,6 +3,9 @@ import {
   SET_FETCH_USER_PREFERRED_CATEGORIES,
   SET_POST_USER_PREFERRED_CATEGORIES,
   SET_DELETE_USER_PREFERRED_CATEGORIES,
+  SET_FETCH_USER_PREFERRED_AUTHORS,
+  SET_POST_USER_PREFERRED_AUTHORS,
+  SET_DELETE_USER_PREFERRED_AUTHORS,
   SET_FETCH_USER_PREFERRED_SOURCES,
   SET_POST_USER_PREFERRED_SOURCES,
   SET_DELETE_USER_PREFERRED_SOURCES,
@@ -43,6 +46,39 @@ export const deleteUserPreferredCategories = (payload) => async (dispatch) => {
   dispatch({
     type: SET_DELETE_USER_PREFERRED_CATEGORIES,
     payload: preferredCategories.value
+  })
+}
+
+export const fetchUserPreferredAuthors = (payload) => async (dispatch) => {
+  const apiUrl = process.env.REACT_APP_API_BASE_URL + `/user-authors-preferences?user_id=${payload.user_id}`
+
+  const { data: preferredAuthors } = await axios.get(apiUrl)
+  dispatch({
+    type: SET_FETCH_USER_PREFERRED_AUTHORS,
+    payload: preferredAuthors
+  })
+}
+
+export const postUserPreferredAuthors = (payload) => async (dispatch) => {
+  const apiUrl = process.env.REACT_APP_API_BASE_URL + `/user-authors-preferences`
+  const { data: preferredAuthors } = await axios.post(apiUrl, payload)
+
+  dispatch({
+    type: SET_POST_USER_PREFERRED_AUTHORS,
+    payload: {
+      value: preferredAuthors.value,
+      label: preferredAuthors.label
+    }
+  })
+}
+
+export const deleteUserPreferredAuthors = (payload) => async (dispatch) => {
+  const apiUrl = process.env.REACT_APP_API_BASE_URL + `/user-authors-preferences?user_id=${payload.user_id}&value=${payload.value}`
+  const { data: preferredAuthors } = await axios.delete(apiUrl)
+
+  dispatch({
+    type: SET_DELETE_USER_PREFERRED_AUTHORS,
+    payload: preferredAuthors.value
   })
 }
 
