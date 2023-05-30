@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchFilteredNewYorkTimesApi, fetchFilteredNewsApi, fetchFilteredTheGuardianApi, unmountFilteredNews } from '../actions/newsActions';
+import { fetchFilteredNewYorkTimesApi, fetchFilteredNewsApi, fetchFilteredNewsRequest, fetchFilteredTheGuardianApi, unmountFilteredNews } from '../actions/newsActions';
 import { FaSearch } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import Select from 'react-select';
@@ -35,13 +35,15 @@ const SearchAndFilter = () => {
       if (filterSource.value) {
         switch (filterSource.value) {
           case 'news-api':
-            // dispatch(fetchFilteredNewsApi({
-            //   keyword,
-            //   selectedDate: filterDate && Utils.getFormattedDate(filterDate)
-            // }))
+            dispatch(fetchFilteredNewsRequest())
+            dispatch(fetchFilteredNewsApi({
+              keyword,
+              selectedDate: filterDate && Utils.getFormattedDate(filterDate)
+            }))
             break;
 
           case 'guardian':
+            dispatch(fetchFilteredNewsRequest())
             dispatch(fetchFilteredTheGuardianApi({
               keyword,
               section: filterCategory?.value,
@@ -50,6 +52,7 @@ const SearchAndFilter = () => {
             break;
 
           case 'nyt':
+            dispatch(fetchFilteredNewsRequest())
             dispatch(fetchFilteredNewYorkTimesApi({
               keyword,
               section: filterCategory?.value,
@@ -61,10 +64,11 @@ const SearchAndFilter = () => {
             break;
         }
       } else {
-        // dispatch(fetchFilteredNewsApi({
-        //   keyword,
-        //   selectedDate: filterDate && Utils.getFormattedDate(filterDate)
-        // }))
+        dispatch(fetchFilteredNewsRequest())
+        dispatch(fetchFilteredNewsApi({
+          keyword,
+          selectedDate: filterDate && Utils.getFormattedDate(filterDate)
+        }))
         dispatch(fetchFilteredTheGuardianApi({
           keyword,
           section: filterCategory?.value,
@@ -85,6 +89,7 @@ const SearchAndFilter = () => {
     if (filterSource.value) {
       switch (filterSource.value) {
         case 'guardian':
+          dispatch(fetchFilteredNewsRequest())
           dispatch(fetchFilteredTheGuardianApi({
             keyword,
             section: selected.value,
@@ -93,6 +98,7 @@ const SearchAndFilter = () => {
           break;
 
         case 'nyt':
+          dispatch(fetchFilteredNewsRequest())
           dispatch(fetchFilteredNewYorkTimesApi({
             keyword,
             section: selected.value,
@@ -104,6 +110,7 @@ const SearchAndFilter = () => {
           break;
       }
     } else {
+      dispatch(fetchFilteredNewsRequest())
       dispatch(fetchFilteredTheGuardianApi({
         keyword,
         section: selected.value,
@@ -124,13 +131,15 @@ const SearchAndFilter = () => {
     if (filterSource.value) {
       switch (filterSource.value) {
         case 'news-api':
-          // dispatch(fetchFilteredNewsApi({
-          //   keyword,
-          //   selectedDate: formattedDate
-          // }))
+          dispatch(fetchFilteredNewsRequest())
+          dispatch(fetchFilteredNewsApi({
+            keyword,
+            selectedDate: formattedDate
+          }))
           break;
 
         case 'guardian':
+          dispatch(fetchFilteredNewsRequest())
           dispatch(fetchFilteredTheGuardianApi({
             keyword,
             section: filterCategory?.value,
@@ -139,6 +148,7 @@ const SearchAndFilter = () => {
           break;
 
         case 'nyt':
+          dispatch(fetchFilteredNewsRequest())
           dispatch(fetchFilteredNewYorkTimesApi({
             keyword,
             section: filterCategory?.value,
@@ -150,10 +160,11 @@ const SearchAndFilter = () => {
           break;
       }
     } else {
-      // dispatch(fetchFilteredNewsApi({
-      //   keyword,
-      //   selectedDate: formattedDate
-      // }))
+      dispatch(fetchFilteredNewsRequest())
+      dispatch(fetchFilteredNewsApi({
+        keyword,
+        selectedDate: formattedDate
+      }))
       dispatch(fetchFilteredTheGuardianApi({
         keyword,
         section: filterCategory?.value,
@@ -172,14 +183,16 @@ const SearchAndFilter = () => {
 
     switch (source.value) {
       case 'news-api':
-        // dispatch(fetchFilteredNewsApi({
-        //   keyword,
-        //   selectedDate: filterDate && Utils.getFormattedDate(filterDate)
-        // }))
+        dispatch(fetchFilteredNewsRequest())
+        dispatch(fetchFilteredNewsApi({
+          keyword,
+          selectedDate: filterDate && Utils.getFormattedDate(filterDate)
+        }))
         setFilterCategory({ value: '', label: '' })
         break;
 
       case 'guardian':
+        dispatch(fetchFilteredNewsRequest())
         dispatch(fetchFilteredTheGuardianApi({
           keyword,
           section: filterCategory?.value,
@@ -188,6 +201,7 @@ const SearchAndFilter = () => {
         break;
 
       case 'nyt':
+        dispatch(fetchFilteredNewsRequest())
         dispatch(fetchFilteredNewYorkTimesApi({
           keyword,
           section: filterCategory?.value,

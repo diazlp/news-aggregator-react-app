@@ -74,7 +74,7 @@ const HeaderNav = () => {
                         className="text-sm text-gray-700 hover:underline cursor-pointer"
                         onClick={handleBackToLoginClick}
                       >
-                        back to Login
+                        ← back to login
                       </div>
                     </div>
                   </>
@@ -88,7 +88,7 @@ const HeaderNav = () => {
                         className="text-sm text-gray-700 hover:underline cursor-pointer"
                         onClick={handleRegisterClick}
                       >
-                        register
+                        register →
                       </div>
                     </div>
                   </>

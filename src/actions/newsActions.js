@@ -117,11 +117,24 @@ export const fetchNewYorkTimesApiHeadline = () => async (dispatch, getState) => 
 export const fetchFilteredNewsApi = (payload) => async (dispatch, getState) => {
   const { monthAgoDate, todaysDate } = Utils.getDefaultSearchDate()
   const apiUrl = process.env.REACT_APP_API_BASE_URL + `/news-api-filter?q=${payload.keyword}&from=${payload.selectedDate || monthAgoDate}&to=${payload.selectedDate || todaysDate}`;
-  dispatch(fetchFilteredNewsRequest())
 
   try {
-    const { data } = await axios.get(apiUrl)
-    const news = [...getState().news.filteredNews, ...data]
+    let news;
+
+    if (payload.selectedDate) {
+      const { data } = await axios.get(apiUrl)
+      news = [...getState().news.filteredNews, ...data]
+    } else {
+      const stateFiltered = getState().news.headlines.filter(({ source, title, category }) => {
+        return (
+          source === 'News API' &&
+          title.toLowerCase().includes(payload.keyword.toLowerCase()) &&
+          (!payload.section || category === payload.section)
+        )
+      })
+
+      news = [...getState().news.filteredNews, ...stateFiltered]
+    }
 
     dispatch({
       type: SET_FILTERED_NEWS,
@@ -136,11 +149,24 @@ export const fetchFilteredNewsApi = (payload) => async (dispatch, getState) => {
 export const fetchFilteredTheGuardianApi = (payload) => async (dispatch, getState) => {
   const { monthAgoDate, todaysDate } = Utils.getDefaultSearchDate()
   const apiUrl = process.env.REACT_APP_API_BASE_URL + `/guardian-filter?q=${payload.keyword}&section=${payload.section || ""}&from-date=${payload.selectedDate || monthAgoDate}&to-date=${payload.selectedDate || todaysDate}`;
-  dispatch(fetchFilteredNewsRequest())
 
   try {
-    const { data } = await axios.get(apiUrl)
-    const news = [...getState().news.filteredNews, ...data]
+    let news;
+
+    if (payload.selectedDate) {
+      const { data } = await axios.get(apiUrl)
+      news = [...getState().news.filteredNews, ...data]
+    } else {
+      const stateFiltered = getState().news.headlines.filter(({ source, title, category }) => {
+        return (
+          source === 'The Guardian' &&
+          title.toLowerCase().includes(payload.keyword.toLowerCase()) &&
+          (!payload.section || category === payload.section)
+        )
+      })
+
+      news = [...getState().news.filteredNews, ...stateFiltered]
+    }
 
     dispatch({
       type: SET_FILTERED_NEWS,
@@ -155,11 +181,24 @@ export const fetchFilteredTheGuardianApi = (payload) => async (dispatch, getStat
 export const fetchFilteredNewYorkTimesApi = (payload) => async (dispatch, getState) => {
   const { monthAgoDate, todaysDate } = Utils.getDefaultSearchDate()
   const apiUrl = process.env.REACT_APP_API_BASE_URL + `/nyt-filter?q=${payload.keyword}&section=${payload.section || ""}&from-date=${payload.selectedDate || monthAgoDate}&to-date=${payload.selectedDate || todaysDate}`;
-  dispatch(fetchFilteredNewsRequest())
 
   try {
-    const { data } = await axios.get(apiUrl)
-    const news = [...getState().news.filteredNews, ...data]
+    let news;
+
+    if (payload.selectedDate) {
+      const { data } = await axios.get(apiUrl)
+      news = [...getState().news.filteredNews, ...data]
+    } else {
+      const stateFiltered = getState().news.headlines.filter(({ source, title, category }) => {
+        return (
+          source === 'The New York Times' &&
+          title.toLowerCase().includes(payload.keyword.toLowerCase()) &&
+          (!payload.section || category === payload.section)
+        )
+      })
+
+      news = [...getState().news.filteredNews, ...stateFiltered]
+    }
 
     dispatch({
       type: SET_FILTERED_NEWS,
