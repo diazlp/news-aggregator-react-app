@@ -1,34 +1,108 @@
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useState, useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import Utils from '../utils';
+import { deleteUserPreferredSources, postUserPreferredSources } from '../actions/userPreferences';
 
 const UserPreferencesModal = ({ isOpen, onClose }) => {
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedAuthors, setSelectedAuthors] = useState([]);
-  const [selectedSources, setSelectedSources] = useState([]);
+  const dispatch = useDispatch()
 
+  const previousSelectedCategoriesRef = useRef([]);
+  const previousSelectedAuthorsRef = useRef([]);
+  const previousSelectedSourcesRef = useRef([]);
+
+  const { user_id } = useSelector((state) => state.user)
   const { categories, authors } = useSelector((state) => state.news);
+  const { preferredCategories, preferredAuthors, preferredSources } = useSelector((state) => state.userPreferences)
 
-  const authorsOptions = [
-    { value: 'john', label: 'John' },
-    { value: 'emma', label: 'Emma' },
-    { value: 'alex', label: 'Alex' },
-    { value: 'sara', label: 'Sara' },
-    { value: 'michael', label: 'Michael' },
-  ];
+  const [selectedCategories, setSelectedCategories] = useState(preferredCategories);
+  const [selectedAuthors, setSelectedAuthors] = useState(preferredAuthors);
+  const [selectedSources, setSelectedSources] = useState(preferredSources);
+
+  useEffect(() => {
+    if (preferredCategories.length) {
+      setSelectedCategories(preferredCategories)
+    }
+    if (selectedAuthors.length) {
+      setSelectedAuthors(selectedAuthors)
+    }
+    if (preferredSources.length) {
+      setSelectedSources(preferredSources)
+    }
+  },
+    [preferredCategories, preferredAuthors, preferredSources]
+  )
+
+  useEffect(() => {
+    previousSelectedCategoriesRef.current = selectedCategories;
+    previousSelectedAuthorsRef.current = selectedAuthors;
+    previousSelectedSourcesRef.current = selectedSources;
+  });
 
   const handleCategoryChange = (selectedOptions) => {
+    const previousSelectedCategories = previousSelectedCategoriesRef.current;
+    const selectedValues = selectedOptions.map((option) => option.value);
+
+    const deletedCategories = previousSelectedCategories.filter(
+      (category) => !selectedValues.includes(category.value)
+    );
+
+    const addedCategories = selectedOptions.filter(
+      (option) => !previousSelectedCategories.find((category) => category.value === option.value)
+    );
+
     setSelectedCategories(selectedOptions);
+
+    console.log('Deleted categories:', deletedCategories);
+    console.log('Added categories:', addedCategories);
   };
 
   const handleAuthorChange = (selectedOptions) => {
+    const previousSelectedAuthors = previousSelectedAuthorsRef.current;
+    const selectedValues = selectedOptions.map((option) => option.value);
+
+    const deletedAuthors = previousSelectedAuthors.filter(
+      (author) => !selectedValues.includes(author.value)
+    );
+
+    const addedAuthors = selectedOptions.filter(
+      (option) => !previousSelectedAuthors.find((author) => author.value === option.value)
+    );
+
     setSelectedAuthors(selectedOptions);
+
+    console.log('Deleted authors:', deletedAuthors);
+    console.log('Added authors:', addedAuthors);
   };
 
-  const handleSourceChange = (selectedOptions) => {
+  const onSourceChange = (selectedOptions) => {
+    const previousSelectedSources = previousSelectedSourcesRef.current;
+    const selectedValues = selectedOptions.map((option) => option.value);
+
+    const deletedSources = previousSelectedSources.filter(
+      (source) => !selectedValues.includes(source.value)
+    );
+
+    const addedSources = selectedOptions.filter(
+      (option) => !previousSelectedSources.find((source) => source.value === option.value)
+    );
+
     setSelectedSources(selectedOptions);
+
+    if (addedSources.length) {
+      dispatch(postUserPreferredSources({
+        user_id,
+        value: addedSources[0].value,
+        label: addedSources[0].label
+      }))
+    } else if (deletedSources.length) {
+      dispatch(deleteUserPreferredSources({
+        user_id,
+        value: deletedSources[0].value
+      }))
+    }
   };
+
 
   return (
     <div className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? '' : 'hidden'}`}>
@@ -60,6 +134,7 @@ const UserPreferencesModal = ({ isOpen, onClose }) => {
                   placeholder="Select by Categories..."
                   options={categories}
                   value={selectedCategories}
+                  isClearable={false}
                   isMulti
                   onChange={handleCategoryChange}
                 />
@@ -73,6 +148,7 @@ const UserPreferencesModal = ({ isOpen, onClose }) => {
                   placeholder="Select by Authors..."
                   options={authors}
                   value={selectedAuthors}
+                  isClearable={false}
                   isMulti
                   onChange={handleAuthorChange}
                 />
@@ -86,8 +162,9 @@ const UserPreferencesModal = ({ isOpen, onClose }) => {
                   placeholder="Select by Sources..."
                   options={Utils.sourceFilterOptions()}
                   value={selectedSources}
+                  isClearable={false}
                   isMulti
-                  onChange={handleSourceChange}
+                  onChange={onSourceChange}
                 />
               </div>
             </div>

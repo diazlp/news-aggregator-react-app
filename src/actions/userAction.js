@@ -6,6 +6,7 @@ import {
   SET_USER_LOGIN_REQUEST,
   SET_USER_LOGIN_SUCCESS,
   SET_USER_LOGIN_FAILURE,
+  SET_USER_HAS_LOGIN,
   SET_USER_LOGOUT,
   UNMOUNT_RESPONSE_STATUS_DISPLAY
 } from '../actions/actionTypes'
@@ -78,6 +79,11 @@ export const postUserLogin = (payload) => async (dispatch) => {
     }, 2000)
   }
 }
+
+export const userHasLoggedIn = (payload) => ({
+  type: SET_USER_HAS_LOGIN,
+  payload
+})
 
 export const postUserLogout = () => async (dispatch) => {
   sessionStorage.clear()

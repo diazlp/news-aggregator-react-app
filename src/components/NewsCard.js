@@ -10,7 +10,7 @@ const NewsCard = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    // dispatch(fetchNewsApiHeadline())
+    dispatch(fetchNewsApiHeadline())
     dispatch(fetchTheGuardianApiHeadline())
     dispatch(fetchNewYorkTimesApiHeadline())
   }, [])

@@ -6,7 +6,8 @@ import {
   SET_USER_LOGIN_SUCCESS,
   SET_USER_LOGIN_FAILURE,
   SET_USER_LOGOUT,
-  UNMOUNT_RESPONSE_STATUS_DISPLAY
+  UNMOUNT_RESPONSE_STATUS_DISPLAY,
+  SET_USER_HAS_LOGIN
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -14,6 +15,7 @@ const initialState = {
   isUserLoggedIn: false,
   showUserSuccess: false,
   showUserFailure: false,
+  user_id: 0
 }
 
 const userReducer = (state = initialState, action) => {
@@ -57,6 +59,13 @@ const userReducer = (state = initialState, action) => {
         ...state,
         userLoading: false,
         showUserFailure: true,
+      }
+
+    case SET_USER_HAS_LOGIN:
+      return {
+        ...state,
+        isUserLoggedIn: true,
+        user_id: action.payload
       }
 
     case SET_USER_LOGOUT:
