@@ -7,6 +7,7 @@ import Select from 'react-select';
 import Utils from '../utils';
 
 import 'react-datepicker/dist/react-datepicker.css';
+import { filterOnUserPreferences } from '../actions/userPreferences';
 
 const SearchAndFilter = () => {
   const dispatch = useDispatch()
@@ -86,8 +87,8 @@ const SearchAndFilter = () => {
   const onCategoryFilter = (selected) => {
     setFilterCategory(selected)
 
-    if (filterSource.value) {
-      switch (filterSource.value) {
+    if (filterSource?.value) {
+      switch (filterSource?.value) {
         case 'guardian':
           dispatch(fetchFilteredNewsRequest())
           dispatch(fetchFilteredTheGuardianApi({

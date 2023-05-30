@@ -10,12 +10,15 @@ import {
   SET_FILTERED_NEWS_SUCCESS,
   SET_FILTERED_NEWS_FAILURE,
   UNMOUNT_FILTERED_NEWS,
+  SET_NEWS_HEADLINE_ON_PREFERENCES,
+  UNMOUNT_USER_PREFERED_NEWS,
 } from "../actions/actionTypes";
 
 const initialState = {
   isHeadlineLoading: false,
   isSearchLoading: false,
   isSearchedNews: false,
+  isPreferredNews: false,
   headlines: [],
   categories: [],
   authors: [],
@@ -47,6 +50,19 @@ const newsReducer = (state = initialState, action) => {
         ...state,
         filteredNews: action.payload,
         isSearchedNews: true,
+      }
+
+    case SET_NEWS_HEADLINE_ON_PREFERENCES:
+      return {
+        ...state,
+        filteredNews: action.payload,
+        isPreferredNews: true
+      }
+
+    case UNMOUNT_USER_PREFERED_NEWS:
+      return {
+        ...state,
+        isPreferredNews: false
       }
 
     case UNMOUNT_FILTERED_NEWS:

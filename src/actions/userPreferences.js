@@ -9,11 +9,17 @@ import {
   SET_FETCH_USER_PREFERRED_SOURCES,
   SET_POST_USER_PREFERRED_SOURCES,
   SET_DELETE_USER_PREFERRED_SOURCES,
-  UNMOUNT_USER_PREFERRED_SETTINGS
+  UNMOUNT_USER_PREFERRED_SETTINGS,
+  UNMOUNT_USER_PREFERED_NEWS,
+  SET_NEWS_HEADLINE_ON_PREFERENCES,
 } from "./actionTypes";
 
 export const unmountUserPreferences = () => ({
   type: UNMOUNT_USER_PREFERRED_SETTINGS
+})
+
+export const unmountUserPreferedNews = () => ({
+  type: UNMOUNT_USER_PREFERED_NEWS
 })
 
 export const fetchUserPreferredCategories = (payload) => async (dispatch) => {
@@ -112,5 +118,44 @@ export const deleteUserPreferredSources = (payload) => async (dispatch) => {
   dispatch({
     type: SET_DELETE_USER_PREFERRED_SOURCES,
     payload: preferredSources.value
+  })
+}
+
+// Filter on User Preferences
+export const filterOnUserPreferences = () => async (dispatch, getState) => {
+
+  let sourceFiltered = []
+  if (getState().userPreferences.preferredSources.length) {
+    for (const { label } of getState().userPreferences.preferredSources) {
+      const filtered = getState().news.headlines.filter(({ source }) => source === label);
+      sourceFiltered.push(...filtered)
+    }
+  } else {
+    sourceFiltered = getState().news.headlines
+  }
+
+  let categoryFiltered = [];
+  if (getState().userPreferences.preferredCategories.length) {
+    for (const { value } of getState().userPreferences.preferredCategories) {
+      const filtered = sourceFiltered.filter(({ category }) => category === value);
+      categoryFiltered.push(...filtered);
+    }
+  } else {
+    categoryFiltered = sourceFiltered;
+  }
+
+  let authorFiltered = []
+  if (getState().userPreferences.preferredAuthors.length) {
+    for (const { label } of getState().userPreferences.preferredAuthors) {
+      const filtered = categoryFiltered.filter(({ author }) => author === label);
+      authorFiltered.push(...filtered);
+    }
+  } else {
+    authorFiltered = categoryFiltered;
+  }
+
+  dispatch({
+    type: SET_NEWS_HEADLINE_ON_PREFERENCES,
+    payload: authorFiltered
   })
 }

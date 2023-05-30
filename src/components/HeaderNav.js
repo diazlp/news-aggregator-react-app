@@ -24,13 +24,15 @@ const HeaderNav = () => {
               isUserLoggedIn ? (
                 <div className="flex items-center gap-4">
                   <div className="flex items-center hover:underline font-semibold cursor-pointer gap-2" onClick={() => setShowPreferenceModal(true)}>
-                    Preferences <FaCog />
+                    <span className="hidden sm:block">Preferences</span>
+                    <FaCog />
                   </div>
                   <button
                     className="select-none py-2 px-4 transition duration-300 hover:underline font-semibold flex items-center"
                     onClick={() => dispatch(postUserLogout())}
                   >
-                    Logout <FaSignOutAlt className="ml-3" />
+                    Logout
+                    <FaSignOutAlt className="ml-3" />
                   </button>
                 </div>
               ) : (

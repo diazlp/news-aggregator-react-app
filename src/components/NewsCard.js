@@ -1,19 +1,32 @@
 import { useState, useEffect } from 'react'
-import { fetchNewYorkTimesApiHeadline, fetchNewsApiHeadline, fetchTheGuardianApiHeadline } from "../actions/newsActions"
+import { fetchNewYorkTimesApiHeadline, fetchNewsApiHeadline, fetchTheGuardianApiHeadline, unmountFilteredNews } from "../actions/newsActions"
 import { useDispatch, useSelector } from 'react-redux';
+import { filterOnUserPreferences, unmountUserPreferedNews } from '../actions/userPreferences';
 import NewsSkeleton from './NewsSkeleton';
 
 const NewsCard = () => {
   const [news, setNews] = useState([])
 
-  const { isHeadlineLoading, isSearchLoading, isSearchedNews, headlines, filteredNews } = useSelector((state) => state.news)
+  const { isHeadlineLoading, isSearchLoading, isSearchedNews, isPreferredNews, headlines, filteredNews } = useSelector((state) => state.news)
+  const { preferredCategories, preferredAuthors, preferredSources } = useSelector((state) => state.userPreferences)
+
   const dispatch = useDispatch()
 
   useEffect(() => {
-    // dispatch(fetchNewsApiHeadline())
+    dispatch(fetchNewsApiHeadline())
     dispatch(fetchTheGuardianApiHeadline())
     dispatch(fetchNewYorkTimesApiHeadline())
   }, [])
+
+  useEffect(() => {
+    if (preferredCategories.length || preferredAuthors.length || preferredSources.length) {
+      dispatch(unmountFilteredNews())
+      dispatch(filterOnUserPreferences())
+    } else {
+      dispatch(unmountFilteredNews())
+      dispatch(unmountUserPreferedNews())
+    }
+  }, [preferredCategories, preferredAuthors, preferredSources])
 
   useEffect(() => {
     if (headlines.length) {
@@ -66,7 +79,7 @@ const NewsCard = () => {
       return <NewsCardTemplate contents={filteredNews} />
     }
 
-    if (isSearchedNews && !filteredNews.length) {
+    if ((isPreferredNews || isSearchedNews) && !filteredNews.length) {
       return (
         <div className="flex items-center justify-center h-full mt-10">
           <h2 className="text-3xl font-bold text-gray-500">No Results Found</h2>
